@@ -1,10 +1,10 @@
 CREATE TABLE department (
     id INT AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL,
+    department_name VARCHAR(30) NOT NULL,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE role (
+CREATE TABLE roles (
     id INT AUTO_INCREMENT,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL NOT NULL,
@@ -18,4 +18,7 @@ CREATE TABLE employee (
     role_id INT NOT NULL,
     manager_id INT DEFAULT NULL,
     PRIMARY KEY (id)
-)
+);
+SELECT * FROM department;
+SELECT * from roles;
+SELECT * from employee; 
