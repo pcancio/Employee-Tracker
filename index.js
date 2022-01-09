@@ -19,10 +19,6 @@ const startApp = () => {
                     'Add Employee',
                     'Update Employee Role',
                     'Update Employee Manager',
-                    'View All Employees by Role',
-                    'View All Employees by Department',
-                    'View All Employees by Manager',
-                    'Remove Employee',
                     'Exit',
                 ],
             })
@@ -60,22 +56,6 @@ const startApp = () => {
                         updateEmployeeManager();
                         break;
 
-                    case 'View All Employees by Role':
-                        viewAllEmployeesByRole();
-                        break;
-
-                    case 'View All Employees by Department':
-                        viewAllEmployeesByDepartment();
-                        break;
-
-                    case 'View All Employees by Manager':
-                        viewAllEmployeesByManager();
-                        break;
-
-                    case 'Remove Employee':
-                        removeEmployee();
-                        break;
-
                     case 'Exit':
                         connection.end();
                         console.log('You have exited Employee Tracker');
@@ -85,7 +65,7 @@ const startApp = () => {
     }
     // View All Departments 
 function viewAllDepartments() {
-    connection.query("SELECT * FROM department", (err, data) => {
+    db.query("SELECT * FROM department", (err, data) => {
         if (err) throw err;
         console.table(data);
         startApp();
@@ -93,7 +73,7 @@ function viewAllDepartments() {
 }
 //View All Roles 
 function viewAllRoles() {
-    connection.query("SELECT * FROM roles", (err, data) => {
+    db.query("SELECT role.id, role.title, role.salary, department.department_name FROM role LEFT JOIN department ON role.department_id = department.id", (err, data) => {
         if (err) throw err;
         console.table(data);
         startApp();
@@ -101,7 +81,7 @@ function viewAllRoles() {
 }
 //View All Employees
 function viewAllEmployees() {
-    connection.query("SELECT * FROM employee", (err, data) => {
+    db.query("SELECT employee.id, employee.first_name, employee.last_name, role.role, department.department_name, role.salary, FROM employee x WHERE x.id = employee.manager_id) AS 'Manager' FROM employee LEFT JOIN role ON role.id = employee.role_id LEFT JOIN department ON role.department_id = department.id", (err, data) => {
         if (err) throw err;
         console.table(data);
         startApp();
@@ -122,7 +102,7 @@ function addDepartment() {
                 },
                 (err) => {
                     if (err) throw err;
-                    console.log(`S{answer.department} has been added to Employee Tracker.`);
+                    console.log(`${answer.department} has been added to Employee Tracker.`);
                     startApp();
                 }
             );
@@ -131,45 +111,58 @@ function addDepartment() {
 // add Role
 function addRole() {
     const sql = "SELECT * FROM department";
-    connetion.query(sql, (err, res) => {
-            if (err) throw err;
-            inquirer
-                .prompt([{
-                        name: 'role',
-                        type: 'input',
-                        message: 'What is the name of this new role?',
-                    },
-                    {
-                        name: 'salary',
-                        type: 'input',
-                        message: 'What is the salary for this role?'
-                    },
-                    {
-                        name: 'department',
-                        type: 'list',
-                        choices: () => {
-                            let roles = [];
-                            for (let i = 0; i < res.length; i++) {
-                                roles.push(res[i].name);
-                            }
-                            return roles;
-                        },
-                        message: 'What department does this role belong to?'
-                    },
-
-                ])
-                .then((answer) => {
-                        let choice;
+    db.query(sql, (err, res) => {
+        if (err) throw err;
+        inquirer
+            .prompt([{
+                    name: 'role',
+                    type: 'input',
+                    message: 'What is the name of this new role?',
+                },
+                {
+                    name: 'salary',
+                    type: 'input',
+                    message: 'What is the salary for this role?'
+                },
+                {
+                    name: 'department',
+                    type: 'list',
+                    choices: () => {
+                        let roles = [];
                         for (let i = 0; i < res.length; i++) {
-                            if (res(i).name === answer.department) {
-                                choice = res[i];
-                            }
+                            roles.push(res[i].name);
                         }
-                        connection.query("INSERT INTO role SET ?", {
-                            title: answer.title,
-                            salary: answer.salary,
-                            department_id: choice.id,
-                        }, )
+                        return roles;
+                    },
+                    message: 'What department does this role belong to?'
+                },
+
+            ])
+            .then((answer) => {
+                let choice;
+                for (let i = 0; i < res.length; i++) {
+                    if (res(i).name === answer.department) {
+                        choice = res[i];
                     }
-                })
-    }
+                }
+                connection.query("INSERT INTO role SET ?", {
+                        role: answer.role,
+                        salary: answer.salary,
+                        department_id: choice.id,
+                    },
+                    (err) => {
+                        if (err) throw err;
+                        console.log(`The role of ${answer.role} has been added to Employee Tracker.`);
+                        startApp();
+                    }
+                );
+            });
+    });
+}
+// add Employee
+function addEmployee() {
+    const sql = "SELECT * FROM employee, role";
+    connection.query
+}
+
+startApp();
