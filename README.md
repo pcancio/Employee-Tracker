@@ -23,6 +23,15 @@ WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database
 
 # Images
+<p>Command Line App</p>
+<img src ="./images/startApp() .png">
+<p>Department Table</p>
+<img src ="./images/department table.png">
+<p>Employee Table</p>
+<img src ="./images/employee table.png">
+<p>Roles Table</p>
+<img src ="./images/roles table.png">
+
 # Links
-<a href = "https://github.com/pcancio">My Github</a>
+<a href = "https://github.com/pcancio">My Github Repo </a>
 <a href =>Walk Through Video</a>

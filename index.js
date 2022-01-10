@@ -218,11 +218,11 @@ function updateEmployeeRole() {
                     name: 'employee',
                     type: 'list',
                     choices: () => {
-                        let role = [];
+                        let roles = [];
                         for (let i = 0; i < res.length; i++) {
-                            role.push(res[i].last_name);
+                            roles.push(res[i].last_name);
                         }
-                        let choiceArray = [...new Set(role)];
+                        let choiceArray = [...new Set(roles)];
                         return choiceArray;
                     },
                     message: 'Select the employee to update.'
@@ -235,8 +235,7 @@ function updateEmployeeRole() {
                         for (let i = 0; i < res.length; i++) {
                             role.push(res[i].title);
                         }
-                        let choiceArray = [...new Set(role)];
-                        return choiceArray;
+                        return role;
                     },
                     message: 'Select the new role for the employee.'
                 },
