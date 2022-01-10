@@ -52,7 +52,7 @@ const startApp = () => {
                     break;
 
                 case 'Exit':
-                    connection.end();
+                    db.end();
                     console.log('You have exited Employee Tracker');
                     break;
             }
@@ -184,7 +184,7 @@ function addEmployee() {
                         }
                         return role;
                     },
-                    message: 'Select role',
+                    message: 'Select role.',
                 },
             ])
             .then((answer) => {
@@ -209,7 +209,64 @@ function addEmployee() {
             })
     })
 };
+// Update Employee Role
+function updateEmployeeRole() {
+    db.query('SELECT * FROM employee, roles', (err, res) => {
+        if (err) throw err;
+        inquirer
+            .prompt([{
+                    name: 'employee',
+                    type: 'list',
+                    choices: () => {
+                        let role = [];
+                        for (let i = 0; i < res.length; i++) {
+                            role.push(res[i].last_name);
+                        }
+                        let choiceArray = [...new Set(role)];
+                        return choiceArray;
+                    },
+                    message: 'Select the employee to update.'
+                },
+                {
+                    name: 'role',
+                    type: 'list',
+                    choices: () => {
+                        let role = [];
+                        for (let i = 0; i < res.length; i++) {
+                            role.push(res[i].title);
+                        }
+                        let choiceArray = [...new Set(role)];
+                        return choiceArray;
+                    },
+                    message: 'Select the new role for the employee.'
+                },
+            ])
+            .then((answer) => {
+                let updateEmployee;
+                let updateRole;
 
+                for (let i = 0; i < res.length; i++) {
+                    if (res[i].last_name === answer.employee) {
+                        updateEmployee = res[i].employee
+                    }
+                }
+                for (let i = 0; i < res.length; i++) {
+                    if (res[i].last_name === answer.roles) {
+                        updateRole = res[i];
+                    }
+                }
+                db.query('UPDATE employee SET ? WHERE ?', [{ role_id: updateRole, },
+                        { last_name: updateEmployee, },
+                    ],
+                    (err) => {
+                        if (err) throw err;
+                        console.log('update successful!');
+                        startApp();
+                    }
+                );
+            });
+    });
+}
 
 
 startApp();
