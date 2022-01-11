@@ -34,4 +34,4 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 # Links
 <a href = "https://github.com/pcancio">My Github Repo </a>
-<a href =>Walk Through Video</a>
+<a href ="https://watch.screencastify.com/v/8bGYZ3Hl1VRCkAMWKojE">Walk Through Video</a>
